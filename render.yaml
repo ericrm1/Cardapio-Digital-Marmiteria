@@ -7,11 +7,7 @@ services:
     name: cardapio-digital
     runtime: docker
     dockerfilePath: ./Dockerfile
-    dockerCommand: >-
-      bash -c "./bin/rails db:prepare &&
-      (./bin/rails runner \"exit 1 unless ActiveRecord::Base.connection.table_exists?('users')\" || ./bin/rails db:schema:load) &&
-      ./bin/rails db:seed &&
-      ./bin/rails server"
+    dockerCommand: ./bin/render-start
     plan: free
     healthCheckPath: /up
     envVars:
