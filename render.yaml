@@ -1,0 +1,19 @@
+databases:
+  - name: cardapio-digital-db
+    plan: free
+
+services:
+  - type: web
+    name: cardapio-digital
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerCommand: ./bin/rails server
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cardapio-digital-db
+          property: connectionString
