@@ -3,6 +3,9 @@
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
+  # Guard against db:prepare skipping the primary schema when the cache/queue/cable
+  # configs share the same physical database (common on single-database deploys).
+  ./bin/rails runner "exit 1 unless ActiveRecord::Base.connection.table_exists?('users')" || ./bin/rails db:schema:load
 fi
 
 exec "${@}"
