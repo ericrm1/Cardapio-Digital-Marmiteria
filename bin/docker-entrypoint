@@ -1,7 +1,9 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+# If running the rails server then create or migrate existing database.
+# Matched against the joined args (rather than fixed positions) since some
+# platforms pass the docker command as a single string instead of separate argv entries.
+if [[ "$*" == *rails*server* ]]; then
   echo "==> entrypoint: db:prepare"
   ./bin/rails db:prepare
 
