@@ -1,0 +1,47 @@
+<% content_for :title, @product.name %>
+
+<%= link_to "← Voltar ao cardápio", storefront_menu_path(@restaurant.slug), class: "mb-4 inline-block text-sm text-gray-500" %>
+
+<div class="rounded-xl bg-white p-4 shadow-sm">
+  <% if @product.image.attached? %>
+    <%= image_tag @product.image.variant(resize_to_limit: [ 600, 400 ]), class: "mb-4 w-full rounded-lg object-cover" %>
+  <% end %>
+
+  <h1 class="text-xl font-semibold"><%= @product.name %></h1>
+  <% if @product.description.present? %>
+    <p class="mt-1 text-sm text-gray-600"><%= @product.description %></p>
+  <% end %>
+  <p class="mt-2 text-lg font-semibold text-emerald-700"><%= brl(@product.price) %></p>
+
+  <%= form_with url: storefront_cart_items_path(@restaurant.slug), method: :post, class: "mt-5 space-y-5" do %>
+    <%= hidden_field_tag :product_id, @product.id %>
+
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700">Quantidade</label>
+      <input type="number" name="quantity" value="1" min="1" max="99" class="w-24 rounded-lg border border-gray-300 px-3 py-2">
+    </div>
+
+    <% if @addons.any? %>
+      <div>
+        <p class="mb-2 text-sm font-medium text-gray-700">Adicionais</p>
+        <div class="space-y-1">
+          <% @addons.each do |addon| %>
+            <label class="flex items-center gap-2 text-sm text-gray-700">
+              <input type="checkbox" name="addon_ids[]" value="<%= addon.id %>" class="rounded border-gray-300">
+              <%= addon.name %> + <%= brl(addon.price) %>
+            </label>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700">Alguma observação?</label>
+      <textarea name="observation" rows="2" placeholder="Ex: sem cebola" class="w-full rounded-lg border border-gray-300 px-3 py-2"></textarea>
+    </div>
+
+    <button type="submit" class="w-full rounded-lg bg-emerald-600 py-2.5 font-medium text-white hover:bg-emerald-700">
+      Adicionar ao carrinho
+    </button>
+  <% end %>
+</div>

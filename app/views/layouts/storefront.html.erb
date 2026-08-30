@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || @restaurant&.name || "Cardápio Digital" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50 text-gray-900 pb-24">
+    <main class="mx-auto max-w-lg px-4 py-4">
+      <% if notice.present? %>
+        <p class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-sm text-green-800"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <% if show_cart_bar? && cart.items.sum(&:quantity).positive? %>
+      <% calculation = CalculateOrderTotal.new(@restaurant, cart.items).call %>
+      <div class="fixed inset-x-0 bottom-0 border-t border-gray-200 bg-white p-3">
+        <%= link_to storefront_cart_path(@restaurant.slug), class: "mx-auto flex max-w-lg items-center justify-between rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white" do %>
+          <span>🛒 Ver pedido</span>
+          <span><%= brl(calculation.total) %></span>
+        <% end %>
+      </div>
+    <% end %>
+  </body>
+</html>

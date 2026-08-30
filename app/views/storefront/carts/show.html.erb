@@ -1,0 +1,51 @@
+<% content_for :title, "Seu pedido" %>
+
+<%= link_to "← Continuar comprando", storefront_menu_path(@restaurant.slug), class: "mb-4 inline-block text-sm text-gray-500" %>
+
+<h1 class="mb-4 text-xl font-semibold">Seu pedido</h1>
+
+<% if @calculation.line_items.empty? %>
+  <p class="text-gray-500">Seu carrinho está vazio.</p>
+<% else %>
+  <div class="space-y-3">
+    <% @calculation.line_items.each do |line| %>
+      <div class="rounded-xl bg-white p-4 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="font-medium"><%= line.quantity %>x <%= line.product.name %></p>
+            <p class="text-sm text-gray-500"><%= brl(line.unit_price) %> cada</p>
+          </div>
+          <p class="font-semibold text-emerald-700"><%= brl(line.item_subtotal) %></p>
+        </div>
+
+        <% if line.addons.any? %>
+          <ul class="mt-2 text-sm text-gray-600">
+            <% line.addons.each do |addon_line| %>
+              <li><%= addon_line.addon.name %> + <%= brl(addon_line.unit_price) %></li>
+            <% end %>
+          </ul>
+        <% end %>
+
+        <% if line.observation.present? %>
+          <p class="mt-2 text-sm italic text-gray-500">Obs: <%= line.observation %></p>
+        <% end %>
+
+        <%= form_with url: storefront_cart_item_path(@restaurant.slug, line.cart_item_id), method: :patch, class: "mt-3 flex items-center gap-2" do %>
+          <input type="number" name="quantity" value="<%= line.quantity %>" min="1" max="99" class="w-16 rounded-lg border border-gray-300 px-2 py-1 text-sm">
+          <button type="submit" class="rounded-lg bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200">Atualizar</button>
+        <% end %>
+
+        <%= button_to "Remover", storefront_destroy_cart_item_path(@restaurant.slug, line.cart_item_id), method: :delete,
+              class: "mt-2 bg-transparent p-0 text-sm text-red-600 hover:underline" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-5 flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">
+    <span class="font-medium">Total</span>
+    <span class="text-lg font-semibold text-emerald-700"><%= brl(@calculation.total) %></span>
+  </div>
+
+  <%= link_to "Ir para o checkout", storefront_checkout_path(@restaurant.slug),
+        class: "mt-4 block rounded-lg bg-emerald-600 py-2.5 text-center font-medium text-white hover:bg-emerald-700" %>
+<% end %>

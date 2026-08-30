@@ -1,0 +1,51 @@
+<% content_for :title, "Configurações" %>
+
+<h1 class="mb-6 text-2xl font-semibold">Configurações</h1>
+
+<%= form_with model: @restaurant, url: admin_settings_path, method: :patch, html: { multipart: true, class: "space-y-4 rounded-xl bg-white p-6 shadow-sm" } do |f| %>
+  <% if @restaurant.errors.any? %>
+    <div class="rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800">
+      <ul class="list-disc pl-5">
+        <% @restaurant.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Nome do restaurante", class: "mb-1 block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :name, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :slug, "Slug (URL pública)", class: "mb-1 block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :slug, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+    <p class="mt-1 text-xs text-gray-500">Cardápio disponível em /r/<%= @restaurant.slug %></p>
+  </div>
+
+  <div>
+    <%= f.label :whatsapp, "WhatsApp (com DDD)", class: "mb-1 block text-sm font-medium text-gray-700" %>
+    <%= f.text_field :whatsapp, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :logo, "Logo", class: "mb-1 block text-sm font-medium text-gray-700" %>
+    <% if @restaurant.logo.attached? %>
+      <%= image_tag @restaurant.logo.variant(resize_to_limit: [ 120, 120 ]), class: "mb-2 rounded-lg" %>
+    <% end %>
+    <%= f.file_field :logo, accept: "image/*", class: "block w-full text-sm" %>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <%= f.check_box :active, class: "rounded border-gray-300" %>
+    <%= f.label :active, "Restaurante ativo", class: "text-sm text-gray-700" %>
+  </div>
+
+  <div class="flex items-center gap-2">
+    <%= f.check_box :accepting_orders, class: "rounded border-gray-300" %>
+    <%= f.label :accepting_orders, "Aceitando pedidos", class: "text-sm text-gray-700" %>
+  </div>
+
+  <%= f.submit "Salvar configurações", class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700" %>
+<% end %>

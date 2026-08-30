@@ -1,0 +1,40 @@
+<% content_for :title, "Adicionais" %>
+
+<div class="mb-6 flex items-center justify-between">
+  <h1 class="text-2xl font-semibold">Adicionais</h1>
+  <%= link_to "Novo adicional", new_admin_addon_path, class: "rounded-lg bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700" %>
+</div>
+
+<div class="overflow-hidden rounded-xl bg-white shadow-sm">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-gray-50 text-gray-500">
+      <tr>
+        <th class="px-4 py-3">Nome</th>
+        <th class="px-4 py-3">Preço</th>
+        <th class="px-4 py-3">Status</th>
+        <th class="px-4 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      <% @addons.each do |addon| %>
+        <tr>
+          <td class="px-4 py-3 font-medium"><%= addon.name %></td>
+          <td class="px-4 py-3"><%= brl(addon.price) %></td>
+          <td class="px-4 py-3">
+            <% if addon.active? %>
+              <span class="rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-700">Ativo</span>
+            <% else %>
+              <span class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">Inativo</span>
+            <% end %>
+          </td>
+          <td class="px-4 py-3 text-right space-x-3">
+            <%= link_to "Editar", edit_admin_addon_path(addon), class: "text-emerald-700 hover:underline" %>
+            <%= button_to "Excluir", admin_addon_path(addon), method: :delete,
+                  form: { data: { turbo_confirm: "Tem certeza que deseja excluir este adicional?" } },
+                  class: "text-red-600 hover:underline bg-transparent p-0" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

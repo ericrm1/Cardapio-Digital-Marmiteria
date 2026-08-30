@@ -1,0 +1,34 @@
+<% content_for :title, "Dashboard" %>
+
+<h1 class="mb-6 text-2xl font-semibold">Dashboard</h1>
+
+<div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+  <div class="rounded-xl bg-white p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Pedidos hoje</p>
+    <p class="text-3xl font-semibold"><%= @orders_today_count %></p>
+  </div>
+  <div class="rounded-xl bg-white p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Produtos</p>
+    <p class="text-3xl font-semibold"><%= @products_count %></p>
+  </div>
+  <div class="rounded-xl bg-white p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Categorias</p>
+    <p class="text-3xl font-semibold"><%= @categories_count %></p>
+  </div>
+</div>
+
+<div class="rounded-xl bg-white p-5 shadow-sm">
+  <p class="mb-3 text-sm text-gray-500">Status da loja</p>
+
+  <p class="mb-4 font-medium">
+    <% if @restaurant.accepting_orders? %>
+      <span class="text-emerald-600">🟢 Aceitando pedidos</span>
+    <% else %>
+      <span class="text-red-600">🔴 Pedidos encerrados</span>
+    <% end %>
+  </p>
+
+  <%= button_to(@restaurant.accepting_orders? ? "Encerrar pedidos" : "Aceitar pedidos",
+        admin_store_toggle_path, method: :post,
+        class: "rounded-lg px-4 py-2 font-medium text-white #{@restaurant.accepting_orders? ? 'bg-red-600 hover:bg-red-700' : 'bg-emerald-600 hover:bg-emerald-700'}") %>
+</div>

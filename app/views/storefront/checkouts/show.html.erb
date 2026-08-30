@@ -1,0 +1,58 @@
+<% content_for :title, "Finalizar pedido" %>
+
+<%= link_to "← Voltar ao carrinho", storefront_cart_path(@restaurant.slug), class: "mb-4 inline-block text-sm text-gray-500" %>
+
+<h1 class="mb-4 text-xl font-semibold">Finalizar pedido</h1>
+
+<% unless @availability.available? %>
+  <p class="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800">
+    <% if @availability.reason == :not_accepting_orders %>
+      Pedidos encerrados no momento.
+    <% else %>
+      Estamos fechados no momento.
+    <% end %>
+  </p>
+<% end %>
+
+<%= form_with url: storefront_orders_path(@restaurant.slug), method: :post, class: "space-y-5" do %>
+  <div class="space-y-4 rounded-xl bg-white p-4 shadow-sm">
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700">Nome completo</label>
+      <input type="text" name="customer_name" required class="w-full rounded-lg border border-gray-300 px-3 py-2">
+    </div>
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700">WhatsApp</label>
+      <input type="tel" name="customer_phone" required placeholder="(61) 99999-9999" class="w-full rounded-lg border border-gray-300 px-3 py-2">
+    </div>
+  </div>
+
+  <div class="rounded-xl bg-white p-4 shadow-sm">
+    <p class="mb-3 font-medium">Resumo do pedido</p>
+    <div class="space-y-3">
+      <% @calculation.line_items.each do |line| %>
+        <div class="flex items-start justify-between text-sm">
+          <div>
+            <p class="font-medium text-gray-900"><%= line.quantity %>x <%= line.product.name %></p>
+            <% line.addons.each do |addon_line| %>
+              <p class="text-gray-500">+ <%= addon_line.addon.name %></p>
+            <% end %>
+            <% if line.observation.present? %>
+              <p class="italic text-gray-500">Obs: <%= line.observation %></p>
+            <% end %>
+          </div>
+          <p class="text-gray-700"><%= brl(line.item_subtotal) %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+      <span class="font-medium">Total</span>
+      <span class="text-lg font-semibold text-emerald-700"><%= brl(@calculation.total) %></span>
+    </div>
+  </div>
+
+  <button type="submit" <%= "disabled" unless @availability.available? %>
+    class="w-full rounded-lg bg-emerald-600 py-2.5 font-medium text-white hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-gray-300">
+    Enviar pedido pelo WhatsApp
+  </button>
+<% end %>

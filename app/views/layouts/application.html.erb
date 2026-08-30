@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Cardápio Digital" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Cardápio Digital">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50 text-gray-900">
+    <main class="min-h-screen flex items-center justify-center px-4 py-10">
+      <div class="w-full max-w-md">
+        <% if notice.present? %>
+          <p class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-sm text-green-800"><%= notice %></p>
+        <% end %>
+        <% if alert.present? %>
+          <p class="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800"><%= alert %></p>
+        <% end %>
+
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<% content_for :title, "Horários de funcionamento" %>
+
+<h1 class="mb-6 text-2xl font-semibold">Horários de funcionamento</h1>
+
+<div class="space-y-3">
+  <% @business_hours.each do |hour| %>
+    <%= form_with model: hour, url: admin_business_hour_path(hour), method: :patch, class: "flex flex-wrap items-center gap-4 rounded-xl bg-white p-4 shadow-sm" do |f| %>
+      <div class="w-24 font-medium capitalize"><%= hour.day_name %></div>
+
+      <div class="flex items-center gap-2">
+        <%= f.time_field :open_time, value: hour.open_time&.strftime("%H:%M"), class: "rounded-lg border border-gray-300 px-2 py-1" %>
+        <span>—</span>
+        <%= f.time_field :close_time, value: hour.close_time&.strftime("%H:%M"), class: "rounded-lg border border-gray-300 px-2 py-1" %>
+      </div>
+
+      <label class="flex items-center gap-2 text-sm text-gray-700">
+        <%= f.check_box :active, class: "rounded border-gray-300" %>
+        Aberto
+      </label>
+
+      <%= f.submit "Salvar", class: "ml-auto rounded-lg bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-700" %>
+    <% end %>
+  <% end %>
+</div>

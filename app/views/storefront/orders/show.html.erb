@@ -1,0 +1,16 @@
+<% content_for :title, "Pedido enviado" %>
+<% content_for :head do %>
+  <meta http-equiv="refresh" content="1;url=<%= @whatsapp_url %>">
+<% end %>
+
+<div class="rounded-xl bg-white p-6 text-center shadow-sm">
+  <p class="text-2xl">✅</p>
+  <h1 class="mt-2 text-xl font-semibold">Pedido registrado!</h1>
+  <p class="mt-2 text-sm text-gray-600">
+    Você será redirecionado para o WhatsApp para confirmar seu pedido com <%= @restaurant.name %>.
+  </p>
+
+  <%= link_to "Abrir WhatsApp", @whatsapp_url, class: "mt-5 block rounded-lg bg-emerald-600 py-2.5 font-medium text-white hover:bg-emerald-700" %>
+
+  <p class="mt-3 text-lg font-semibold text-emerald-700"><%= brl(@order.total) %></p>
+</div>

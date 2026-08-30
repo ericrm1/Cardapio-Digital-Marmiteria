@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin - #{current_user&.restaurant&.name}" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-50 text-gray-900">
+    <header class="border-b border-gray-200 bg-white">
+      <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div class="flex items-center gap-4">
+          <%= link_to admin_root_path, class: "font-semibold text-gray-900" do %>
+            <%= current_user.restaurant.name %>
+          <% end %>
+          <nav class="flex gap-3 text-sm text-gray-600">
+            <%= link_to "Dashboard", admin_root_path, class: "hover:text-gray-900" %>
+            <%= link_to "Categorias", admin_categories_path, class: "hover:text-gray-900" %>
+            <%= link_to "Produtos", admin_products_path, class: "hover:text-gray-900" %>
+            <%= link_to "Adicionais", admin_addons_path, class: "hover:text-gray-900" %>
+            <%= link_to "Horários", admin_business_hours_path, class: "hover:text-gray-900" %>
+            <%= link_to "Configurações", admin_settings_path, class: "hover:text-gray-900" %>
+          </nav>
+        </div>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "text-sm text-gray-500 hover:text-gray-900" %>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 py-6">
+      <% if notice.present? %>
+        <p class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-sm text-green-800"><%= notice %></p>
+      <% end %>
+      <% if alert.present? %>
+        <p class="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>
