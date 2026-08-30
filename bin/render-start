@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+echo "==> render-start: db:prepare"
+./bin/rails db:prepare
+
+# Guard against db:prepare skipping the primary schema when the cache/queue/cable
+# configs share the same physical database (common on single-database deploys).
+echo "==> render-start: checking primary schema"
+if ./bin/rails runner "exit 1 unless ActiveRecord::Base.connection.table_exists?('users')"; then
+  echo "==> render-start: primary schema already present"
+else
+  echo "==> render-start: primary schema missing, forcing db:schema:load"
+  ./bin/rails db:schema:load
+fi
+
+echo "==> render-start: db:seed"
+./bin/rails db:seed
+
+echo "==> render-start: starting server"
+exec ./bin/rails server
