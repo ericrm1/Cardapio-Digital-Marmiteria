@@ -2,7 +2,23 @@
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  echo "==> entrypoint: db:prepare"
   ./bin/rails db:prepare
+
+  # Guard against db:prepare skipping the primary schema when the cache/queue/cable
+  # configs share the same physical database (common on single-database deploys).
+  echo "==> entrypoint: checking primary schema"
+  if ./bin/rails runner "exit 1 unless ActiveRecord::Base.connection.table_exists?('users')"; then
+    echo "==> entrypoint: primary schema already present"
+  else
+    echo "==> entrypoint: primary schema missing, forcing db:schema:load"
+    ./bin/rails db:schema:load
+  fi
+
+  echo "==> entrypoint: db:seed"
+  ./bin/rails db:seed
+
+  echo "==> entrypoint: done"
 fi
 
 exec "${@}"
